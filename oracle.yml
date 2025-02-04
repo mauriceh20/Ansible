@@ -1,0 +1,58 @@
+---
+- name: installing Oracle
+  hosts: 
+  become : 
+
+  tasks:
+- name: g 512 oper
+  group:
+    name: g 512 oper
+    state:present
+
+ - name: add g 512 oper
+   command: sudo groupadd
+   register:
+
+ - name: add g 511 dba
+   command: sudo groupadd -g 511 dba
+   register:
+
+ - name: Install -g 511
+   command: sudo groupadd
+   register: 
+
+ - name: add user
+   command: -u 510 -m -d /home/oracle -g oinstall -G oper,dba -s /bin/ksh oracle
+   register: 
+
+- name: Install compat-libcap
+  command: sudo yum install compat-libcap
+  register: compat-libcap
+
+ - name: Install compat
+   command: sudo yum install compat-libcap1
+   register: 
+
+ - name: Install gcc
+  command: sudo yum install gcc-c++
+  register:
+
+ - name: Install glibc-2
+   command: sudo yum install glibc-2
+   register: 
+
+ - name: Install glibc
+   command: sudo yum install glibc
+   register:
+
+ - name: move oracle
+   command: mv oracle /var/tmp
+   register: tmp
+
+ - name: change command
+   command: chmod 777 /var/tmp/oracle
+   register: oracle
+
+ - name: make U01 directory
+   command: mkdir /u01
+   register: oracle
