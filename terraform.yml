@@ -4,16 +4,32 @@
   become: true
 
   tasks: 
-  - name: Install Amazon Linux
+  - name: Install Linux Utils
     yum:
       name: utils
       state: lastest
 
-  - name: add repository 
-    command: sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
-    registar: amazon linux
+- name: Add Hashicorp Repo
+  yum_repository:
+    name: hashicorp
+    description: hashicorp repo
+    baseurl: https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
 
   - name: Install Terraform
-    command: sudo yum -y install terraform
-    registar: terraform
+    yum:
+      name: terraform
+      state: latest
 
+  - name: Download Awscli.zip
+    get_url:
+      url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+      dest: ~/
+
+  - name: Unzip Awscli
+    unarchive:
+      src: ~/awscli-exe-linux-x86_64.zip
+      dest: ~/
+      remote_src: yes
+      
+  - name: Install AWSCLI
+    command: ./aws/install
