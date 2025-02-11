@@ -4,46 +4,47 @@
   become : 
 
   tasks:
+  - name: Make Oracle directory
+    file:
+      path: ~/oracle
+      state: directory
+
 - name: g 512 oper
   group:
-    name: g 512 oper
-    state:present
+    name: oper
+    state: present
+    gid: 512
 
- - name: add g 512 oper
-   command: sudo groupadd
-   register:
+ - name: g 511 dba
+   group:
+     name: dba
+     state: present
+     gid: 511
 
- - name: add g 511 dba
-   command: sudo groupadd -g 511 dba
-   register:
+ - name: create oinstall group
+   group:
+     name: dba
+     state: oinstall
+     gid: 510
 
- - name: Install -g 511
-   command: sudo groupadd
-   register: 
+ - name: oracle
+   uid: 510
+   group: oinstall
+   shell: bin
 
- - name: add user
-   command: -u 510 -m -d /home/oracle -g oinstall -G oper,dba -s /bin/ksh oracle
-   register: 
-
-- name: Install compat-libcap
-  command: sudo yum install compat-libcap
-  register: compat-libcap
-
- - name: Install compat
-   command: sudo yum install compat-libcap1
-   register: 
-
- - name: Install gcc
-  command: sudo yum install gcc-c++
-  register:
-
- - name: Install glibc-2
-   command: sudo yum install glibc-2
-   register: 
-
- - name: Install glibc
-   command: sudo yum install glibc
-   register:
+ - name: Install the following
+   yum: 
+     name: '{{following}}'
+     state: present
+   vars:
+     following items:
+     - libcap
+     - compat
+     - libcap1
+     - gcc
+     - gcc-c++
+     - glibc-2
+     - glibc-2
 
  - name: move oracle
    command: mv oracle /var/tmp
@@ -54,5 +55,7 @@
    register: oracle
 
  - name: make U01 directory
-   command: mkdir /u01
-   register: oracle
+   file:
+     path: ~/U01
+     state: directory
+
